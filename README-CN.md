@@ -1,7 +1,9 @@
-# OpenClaw SecurityAudit-CN 使用指南
+[English](README.md) | [中文](README-CN.md)
+
+# OpenClaw 安全审计版
 
 <p align="center">
-  <img src="renderer/logo.png" alt="OpenClaw Logo" width="120" />
+  <img src="apps/desktop/renderer/logo.png" alt="OpenClaw Logo" width="120" />
 </p>
 
 <p align="center">
@@ -19,7 +21,7 @@
    
    从 [Releases](../../releases) 页面下载最新版本：
    ```
-   OpenClaw SecurityAudit-CN-Setup-2026.x.xx.exe
+   OpenClaw-SecurityAudit-Setup-2026.x.xx.exe
    ```
 
 2. **运行安装程序**
@@ -27,7 +29,7 @@
    - 双击 `.exe` 文件启动安装向导
    - 选择安装目录（默认即可）
    - 点击「安装」等待完成
-   - 勾选「运行 OpenClaw SecurityAudit-CN」后点击「完成」
+   - 勾选「运行 OpenClaw SecurityAudit」后点击「完成」
 
 3. **首次启动**
    
@@ -40,8 +42,8 @@
 
 1. **下载 DMG**
    ```
-   OpenClaw SecurityAudit-CN-2026.x.xx-arm64.dmg  # Apple Silicon
-   OpenClaw SecurityAudit-CN-2026.x.xx-x64.dmg    # Intel
+   OpenClaw-SecurityAudit-2026.x.xx-arm64.dmg  # Apple Silicon
+   OpenClaw-SecurityAudit-2026.x.xx-x64.dmg    # Intel
    ```
 
 2. **安装应用**
@@ -66,8 +68,8 @@
 ### 步骤一：克隆仓库
 
 ```bash
-git clone https://github.com/openclaw/openclaw.git
-cd openclaw
+git clone https://github.com/IrvinZheng/openclaw_security.git
+cd openclaw_security
 ```
 
 ### 步骤二：安装依赖
@@ -126,7 +128,7 @@ npm run dev
 ### 目录结构
 
 ```
-openclaw/
+openclaw_security/
 ├── src/                    # 核心源代码
 │   ├── cli/                # CLI 命令
 │   ├── gateway/            # Gateway 服务
@@ -206,7 +208,7 @@ npm install
 确保已完成主项目构建：
 
 ```bash
-cd /path/to/openclaw
+cd /path/to/openclaw_security
 pnpm build
 ```
 
@@ -412,15 +414,6 @@ open ./my-snake-game/index.html
 
 ---
 
-## 🌐 语言切换
-
-点击右上角的语言按钮可切换中英文：
-
-- 🇨🇳 **中文** - 默认语言
-- 🇺🇸 **EN** - English
-
----
-
 ## 🔧 故障排除
 
 ### Gateway 启动失败
@@ -454,8 +447,8 @@ open ./my-snake-game/index.html
 ## 📞 获取帮助
 
 - 📖 [完整文档](https://docs.openclaw.ai)
-- 🐛 [报告问题](https://github.com/openclaw/openclaw/issues)
-- 💬 [社区讨论](https://github.com/openclaw/openclaw/discussions)
+- 🐛 [报告问题](https://github.com/IrvinZheng/openclaw_security/issues)
+- 💬 [社区讨论](https://github.com/IrvinZheng/openclaw_security/discussions)
 
 ---
 
