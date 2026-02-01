@@ -285,6 +285,28 @@ Go to **Security** page to configure security policies:
 
 **Game Code** is an HTML5 mini-game generator supporting template and AI generation modes.
 
+### Quick Access from Panel
+
+1. Find **Agent → Skills** in the left menu
+2. Search `game` in the filter box
+3. Find the **game-code** skill card
+4. Fill in parameters and click **Execute**
+
+![Skill Panel - Game Code](docs/assets/screenshots/skill-panel-game-code.png)
+
+**Parameters:**
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| Output Directory | Where to save game files | `D:\games` |
+| Generation Mode | Template or AI generation | Template Mode (Quick classic games) |
+| Game Type | Select game template | Snake, Tetris, etc. |
+| Game Title | Custom game name (optional) | My Game |
+
+**Game Preview:**
+
+![Tetris Game Demo](docs/assets/screenshots/tetris-game-demo.png)
+
 ### Overview
 
 ```
