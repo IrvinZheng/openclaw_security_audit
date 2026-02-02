@@ -48,13 +48,46 @@
         "filter": ["**/*"]
       },
       {
-        "from": "../../dist",
-        "to": "openclaw-dist",
-        "filter": ["**/*.js", "**/*.json", "!control-ui/**"]
+        "from": "../../dist/openclaw-bundle.mjs",
+        "to": "node_modules/openclaw-bundle.mjs"
+      },
+      {
+        "from": "../../dist/build-info.json",
+        "to": "build-info.json"
       },
       {
         "from": "../../skills",
         "to": "skills",
+        "filter": ["**/*.md", "**/*.py", "**/*.sh", "**/*.txt", "**/*.toml"]
+      },
+      {
+        "from": "../../node_modules/.pnpm/sharp@0.34.5/node_modules/sharp",
+        "to": "node_modules/sharp",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "../../node_modules/.pnpm/@img+sharp-win32-x64@0.34.5/node_modules/@img/sharp-win32-x64",
+        "to": "node_modules/@img/sharp-win32-x64",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "../../node_modules/.pnpm/sqlite-vec@0.1.7-alpha.2/node_modules/sqlite-vec",
+        "to": "node_modules/sqlite-vec",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "../../node_modules/.pnpm/sqlite-vec-windows-x64@0.1.7-alpha.2/node_modules/sqlite-vec-windows-x64",
+        "to": "node_modules/sqlite-vec-windows-x64",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "../../node_modules/.pnpm/@mariozechner+clipboard@0.3.0/node_modules/@mariozechner/clipboard",
+        "to": "node_modules/@mariozechner/clipboard",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "../../node_modules/.pnpm/@mariozechner+clipboard-win32-x64-msvc@0.3.0/node_modules/@mariozechner/clipboard-win32-x64-msvc",
+        "to": "node_modules/@mariozechner/clipboard-win32-x64-msvc",
         "filter": ["**/*"]
       }
     ],

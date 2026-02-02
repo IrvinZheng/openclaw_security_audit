@@ -21,11 +21,23 @@ function getResourcePath(...paths) {
 // 获取 openclaw CLI 路径
 function getOpenClawPath() {
   if (isPackaged) {
-    // 打包后使用内嵌的 node 和 openclaw
-    const nodePath = process.execPath; // Electron 自带的 node
+    // 打包后使用 Electron 作为 Node.js 运行（需要设置 ELECTRON_RUN_AS_NODE=1）
+    const nodePath = process.execPath;
+    const nodeModulesPath = join(process.resourcesPath, "node_modules");
+    // bundle 放在 node_modules 目录内，这样 ESM 模块解析能正常工作
+    const bundlePath = join(nodeModulesPath, "openclaw-bundle.mjs");
+    if (existsSync(bundlePath)) {
+      return { 
+        node: nodePath, 
+        entry: bundlePath, 
+        cwd: nodeModulesPath,  // 设置工作目录为 node_modules
+        runAsNode: true  // 标记需要设置 ELECTRON_RUN_AS_NODE
+      };
+    }
+    // 回退到旧的 entry.js（兼容性）
     const entryPath = join(process.resourcesPath, "openclaw-dist", "entry.js");
     if (existsSync(entryPath)) {
-      return { node: nodePath, entry: entryPath };
+      return { node: nodePath, entry: entryPath, runAsNode: true };
     }
   }
   
@@ -178,11 +190,16 @@ function createWindow() {
         cwd: openclawInfo.cwd,
       });
     } else {
-      // 打包模式：使用内嵌的 Electron node
+      // 打包模式：使用 Electron 作为 Node.js
+      const env = { ...process.env, NODE_ENV: "production" };
+      if (openclawInfo.runAsNode) {
+        env.ELECTRON_RUN_AS_NODE = "1";  // 让 Electron 作为纯 Node.js 运行
+      }
       gatewayProcess = spawn(openclawInfo.node, [openclawInfo.entry, ...gatewayArgs], {
         detached: false,
         stdio: ["ignore", "pipe", "pipe"],
-        env: { ...process.env, NODE_ENV: "production" },
+        env,
+        cwd: openclawInfo.cwd,  // 在 node_modules 目录下运行
       });
     }
     
@@ -203,12 +220,22 @@ function createWindow() {
     });
     
     gatewayProcess.stderr.on("data", (data) => {
-      console.error("[Gateway Error]", data.toString());
+      const text = data.toString();
+      console.error("[Gateway Error]", text);
+      // 显示错误到 UI
+      updateStatus("Gateway 错误", text.substring(0, 100));
     });
     
     gatewayProcess.on("error", (err) => {
       console.error("Gateway 启动失败:", err);
       updateStatus("Gateway 启动失败", err.message);
+    });
+    
+    gatewayProcess.on("exit", (code, signal) => {
+      console.log(`[Gateway] 进程退出: code=${code}, signal=${signal}`);
+      if (code !== 0 && code !== null) {
+        updateStatus("Gateway 异常退出", `退出码: ${code}`);
+      }
     });
     
     // 等待 Gateway 就绪
@@ -410,9 +437,14 @@ ipcMain.handle("execute-cli", async (_event, args) => {
         cwd: openclawInfo.cwd,
       });
     } else {
+      const env = { ...process.env, NODE_ENV: "production" };
+      if (openclawInfo.runAsNode) {
+        env.ELECTRON_RUN_AS_NODE = "1";
+      }
       cliProcess = spawn(openclawInfo.node, [openclawInfo.entry, ...args], {
         stdio: ["ignore", "pipe", "pipe"],
-        env: { ...process.env, NODE_ENV: "production" },
+        env,
+        cwd: openclawInfo.cwd,
       });
     }
 
@@ -467,10 +499,15 @@ ipcMain.handle("start-gateway", async (_event) => {
         cwd: openclawInfo.cwd,
       });
     } else {
+      const env = { ...process.env, NODE_ENV: "production" };
+      if (openclawInfo.runAsNode) {
+        env.ELECTRON_RUN_AS_NODE = "1";
+      }
       gatewayProcess = spawn(openclawInfo.node, [openclawInfo.entry, ...gatewayArgs], {
         detached: false,
         stdio: ["ignore", "pipe", "pipe"],
-        env: { ...process.env, NODE_ENV: "production" },
+        env,
+        cwd: openclawInfo.cwd,
       });
     }
 

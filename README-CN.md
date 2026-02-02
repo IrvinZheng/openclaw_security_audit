@@ -13,6 +13,28 @@
 
 ---
 
+## 🎁 免费接口 & Token 福利
+
+> **好消息！** 我们为社区贡献者提供 **免费的安全审计接口 Token**，助力你的 AI 安全开发之旅！
+
+### ✅ 领取条件
+
+- 给本项目点过 Star ⭐
+- 提交过 Issue / Pull Request
+- 或是项目的活跃使用者
+
+### 📮 如何领取
+
+前往 **[免费 Token 领取通道](https://github.com/IrvinZheng/openclaw_security/issues/1)**，按格式留下你的信息，我们会在 0-3 个工作日内审核并通过邮件发送 Token。
+
+<p align="center">
+  <a href="https://github.com/IrvinZheng/openclaw_security/issues/1">
+    <img src="https://img.shields.io/badge/🎁_立即领取免费Token-点击前往-brightgreen?style=for-the-badge" alt="领取免费Token" />
+  </a>
+</p>
+
+---
+
 ## 📦 下载安装
 
 ### Windows 用户

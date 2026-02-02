@@ -12,9 +12,36 @@
 
 ## 快速打包
 
-### Windows 打包
+### Windows 独立安装包（推荐）
+
+打包包含完整 OpenClaw CLI 的独立安装包，**用户无需安装 Node.js**。
 
 #### 方式一：双击脚本（推荐）
+
+```
+双击运行: apps/desktop/build-standalone.bat
+```
+
+#### 方式二：命令行
+
+```powershell
+cd apps/desktop
+powershell -ExecutionPolicy Bypass -File build-standalone.ps1
+```
+
+**独立安装包特性：**
+- ✅ 包含完整 OpenClaw CLI（使用 esbuild 打包成单文件）
+- ✅ 包含 native 模块（sharp 图片处理、sqlite-vec 向量数据库）
+- ✅ 用户无需预先安装 Node.js、npm 或 OpenClaw CLI
+- ✅ 安装包体积约 90MB
+
+---
+
+### Windows 标准打包
+
+需要用户预先安装 OpenClaw CLI。
+
+#### 方式一：双击脚本
 
 ```
 双击运行: apps/desktop/build.bat
