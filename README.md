@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <strong>AI 安全审计网关控制台</strong><br>
+  <strong>AI 安全审计终端智能体</strong><br>
   一站式管理 AI 工具调用的安全检测、模型配置和技能扩展
 </p>
 
