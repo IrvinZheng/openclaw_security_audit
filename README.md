@@ -1,173 +1,195 @@
-[English](README.md) | [中文](README-CN.md)
+[English](README-EN.md) | [中文](README.md)
 
-# OpenClaw Security Audit
+# OpenClaw 安全审计版
 
 <p align="center">
   <img src="apps/desktop/renderer/logo.png" alt="OpenClaw Logo" width="120" />
 </p>
 
 <p align="center">
-  <strong>AI Security Audit Gateway Console</strong><br>
-  One-stop management for AI tool call security detection, model configuration, and skill extensions
+  <strong>AI 安全审计网关控制台</strong><br>
+  一站式管理 AI 工具调用的安全检测、模型配置和技能扩展
 </p>
 
 ---
 
-## 📦 Download & Install
+## 🎁 免费接口 & Token 福利
 
-### Windows Users
+> **好消息！** 我们为社区贡献者提供 **免费的安全审计接口 Token**，助力你的 AI 安全开发之旅！
 
-1. **Download Installer**
+### ✅ 领取条件
+
+- 给本项目点过 Star ⭐
+- 提交过 Issue / Pull Request
+- 或是项目的活跃使用者
+
+### 📮 如何领取
+
+前往 **[免费 Token 领取通道](https://github.com/IrvinZheng/openclaw_security/issues/1)**，按格式留下你的信息，我们会在 0-3 个工作日内审核并通过邮件发送 Token。
+
+<p align="center">
+  <a href="https://github.com/IrvinZheng/openclaw_security/issues/1">
+    <img src="https://img.shields.io/badge/🎁_立即领取免费Token-点击前往-brightgreen?style=for-the-badge" alt="领取免费Token" />
+  </a>
+</p>
+
+---
+
+## 📦 下载安装
+
+### Windows 用户
+
+1. **下载安装包**
    
-   Download the latest version from [Releases](../../releases):
+   从 [Releases](../../releases) 页面下载最新版本：
    ```
    OpenClaw-SecurityAudit-Setup-2026.x.xx.exe
    ```
 
-2. **Run Installer**
+2. **运行安装程序**
    
-   - Double-click the `.exe` file to start the setup wizard
-   - Choose installation directory (default is fine)
-   - Click "Install" and wait for completion
-   - Check "Run OpenClaw SecurityAudit" and click "Finish"
+   - 双击 `.exe` 文件启动安装向导
+   - 选择安装目录（默认即可）
+   - 点击「安装」等待完成
+   - 勾选「运行 OpenClaw SecurityAudit」后点击「完成」
 
-3. **First Launch**
+3. **首次启动**
    
-   After installation, the app will automatically start and:
-   - Show loading screen
-   - Start Gateway service in background
-   - Load the console interface
+   安装完成后，应用会自动启动并：
+   - 显示 Loading 界面
+   - 后台启动 Gateway 服务
+   - 加载控制台界面
 
-### macOS Users
+### macOS 用户
 
-1. **Download DMG**
+1. **下载 DMG**
    ```
    OpenClaw-SecurityAudit-2026.x.xx-arm64.dmg  # Apple Silicon
    OpenClaw-SecurityAudit-2026.x.xx-x64.dmg    # Intel
    ```
 
-2. **Install Application**
-   - Double-click to open DMG file
-   - Drag the app to Applications folder
-   - On first launch, right-click and select "Open" to bypass Gatekeeper
+2. **安装应用**
+   - 双击打开 DMG 文件
+   - 将应用拖拽到 Applications 文件夹
+   - 首次打开时，右键选择「打开」以绕过 Gatekeeper
 
 ---
 
-## 🛠️ Run from Source (Developers)
+## 🛠️ 源代码启动（开发者）
 
-If you want to run from source or contribute to development:
+如果你想从源代码运行或参与开发，请按以下步骤操作：
 
-### Requirements
+### 环境要求
 
-| Dependency | Version | Description |
-|------------|---------|-------------|
-| Node.js | 22+ | JavaScript runtime |
-| pnpm | Latest | Package manager |
-| Python | 3.10+ | Skill scripts (optional) |
+| 依赖 | 版本要求 | 说明 |
+|------|----------|------|
+| Node.js | 22+ | JavaScript 运行时 |
+| pnpm | 最新版 | 包管理器 |
+| Python | 3.10+ | Skill 脚本运行（可选） |
 
-### Step 1: Clone Repository
+### 步骤一：克隆仓库
 
 ```bash
 git clone https://github.com/IrvinZheng/openclaw_security.git
 cd openclaw_security
 ```
 
-### Step 2: Install Dependencies
+### 步骤二：安装依赖
 
 ```bash
-# Install project dependencies
+# 安装项目依赖
 pnpm install
 
-# Enter desktop app directory, install Electron dependencies
+# 进入桌面应用目录，安装 Electron 依赖
 cd apps/desktop
 npm install
 ```
 
-### Step 3: Build Project
+### 步骤三：构建项目
 
 ```bash
-# Return to project root
+# 回到项目根目录
 cd ../..
 
-# Build main project (TypeScript compilation)
+# 构建主项目（TypeScript 编译）
 pnpm build
 
-# Build Control UI (Web interface)
+# 构建 Control UI（Web 界面）
 cd ui
 pnpm build
 cd ..
 ```
 
-### Step 4: Start Application
+### 步骤四：启动应用
 
 ```bash
-# Enter desktop app directory
+# 进入桌面应用目录
 cd apps/desktop
 
-# Start Electron app
+# 启动 Electron 应用
 npm start
 ```
 
-### Development Mode
+### 开发模式
 
-For code modifications, use development mode:
+如果你在修改代码，可以使用开发模式：
 
 ```bash
-# Terminal 1: Watch main project changes (optional)
+# 终端 1：监听主项目变化（可选）
 pnpm build --watch
 
-# Terminal 2: Watch UI changes
+# 终端 2：监听 UI 变化
 cd ui
 pnpm dev
 
-# Terminal 3: Start Electron (dev mode)
+# 终端 3：启动 Electron（开发模式）
 cd apps/desktop
 npm run dev
 ```
 
-### Directory Structure
+### 目录结构
 
 ```
 openclaw_security/
-├── src/                    # Core source code
-│   ├── cli/                # CLI commands
-│   ├── gateway/            # Gateway service
+├── src/                    # 核心源代码
+│   ├── cli/                # CLI 命令
+│   ├── gateway/            # Gateway 服务
 │   └── ...
-├── ui/                     # Control UI (Web interface)
+├── ui/                     # Control UI (Web 界面)
 │   ├── src/
 │   └── ...
 ├── apps/
-│   ├── desktop/            # Electron desktop app ← You are here
-│   │   ├── main.js         # Electron main process
-│   │   ├── preload.js      # Preload script
-│   │   ├── renderer/       # Renderer process (Loading page)
-│   │   └── package.json    # Electron config
-│   ├── android/            # Android app
-│   ├── ios/                # iOS app
-│   └── macos/              # Native macOS app
-├── skills/                 # Skills/tool scripts
-│   ├── game-code/          # Game code generator
+│   ├── desktop/            # Electron 桌面应用 ← 你在这里
+│   │   ├── main.js         # Electron 主进程
+│   │   ├── preload.js      # 预加载脚本
+│   │   ├── renderer/       # 渲染进程（Loading 页面）
+│   │   └── package.json    # Electron 配置
+│   ├── android/            # Android 应用
+│   ├── ios/                # iOS 应用
+│   └── macos/              # 原生 macOS 应用
+├── skills/                 # 技能/工具脚本
+│   ├── game-code/          # 游戏代码生成器
 │   └── ...
-├── dist/                   # Build output
-│   ├── control-ui/         # UI build artifacts
+├── dist/                   # 构建输出
+│   ├── control-ui/         # UI 构建产物
 │   └── ...
-└── package.json            # Project config
+└── package.json            # 项目配置
 ```
 
-### Build Installer
+### 打包安装程序
 
-After building, package as installer:
+构建完成后，可以打包为安装程序：
 
 ```bash
 cd apps/desktop
 
-# Windows installer
+# Windows 安装包
 npm run build:win
 
-# macOS installer (must run on macOS)
+# macOS 安装包（需在 macOS 上执行）
 npm run build:mac
 
-# Or use one-click scripts
+# 或使用一键脚本
 # Windows:
 .\build.bat
 
@@ -175,21 +197,21 @@ npm run build:mac
 ./build-mac.sh
 ```
 
-Build output is in `apps/desktop/dist/` directory.
+打包输出位于 `apps/desktop/dist/` 目录。
 
-### Troubleshooting
+### 常见问题
 
-#### Q: `pnpm build` fails with WSL/bash unavailable
+#### Q: `pnpm build` 报错 WSL/bash 不可用
 
-On Windows without WSL, skip canvas bundling step and run directly:
+在 Windows 上如果没有 WSL，可以跳过 canvas 打包步骤，直接运行：
 
 ```powershell
 npx tsc -p tsconfig.json
 ```
 
-#### Q: Electron installation fails
+#### Q: Electron 安装失败
 
-Set mirror source:
+设置国内镜像源：
 
 ```powershell
 # Windows PowerShell
@@ -203,9 +225,9 @@ export ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
 npm install
 ```
 
-#### Q: "Gateway startup failed" on launch
+#### Q: 启动后显示 "Gateway 启动失败"
 
-Ensure main project is built:
+确保已完成主项目构建：
 
 ```bash
 cd /path/to/openclaw_security
@@ -214,17 +236,17 @@ pnpm build
 
 ---
 
-## ⚙️ Initial Configuration
+## ⚙️ 首次配置
 
-### Auto-generated Token
+### Token 自动生成
 
-On first launch, the system automatically generates a Gateway Token and saves to config:
+首次启动时，系统会自动生成 Gateway Token 并保存到配置文件：
 
 ```
-~/.openclaw/openclaw.json  (user config)
+~/.openclaw/openclaw.json  (用户配置)
 ```
 
-Config example:
+配置文件示例：
 ```json
 {
   "gateway": {
@@ -235,199 +257,223 @@ Config example:
 }
 ```
 
-> 💡 **Tip**: Token protects the Gateway API, no manual configuration needed.
+> 💡 **提示**：Token 用于保护 Gateway API，无需手动配置。
 
 ---
 
-## 🎛️ Basic Operations
+## 🎛️ 基本操作
 
-### 1. Model Configuration
+### 1. 模型配置
 
-Go to **Config** page to set up AI models:
+进入 **配置 (Config)** 页面，设置 AI 模型：
 
-| Setting | Description | Example |
-|---------|-------------|---------|
-| `model.default` | Default model | `gpt-4o`, `claude-3-5-sonnet` |
-| `model.apiKey` | API key | `sk-xxx...` |
-| `model.baseUrl` | Custom API endpoint (optional) | `https://api.openai.com/v1` |
+| 配置项 | 说明 | 示例 |
+|-------|------|------|
+| `model.default` | 默认模型 | `gpt-4o`, `claude-3-5-sonnet` |
+| `model.apiKey` | API 密钥 | `sk-xxx...` |
+| `model.baseUrl` | 自定义接口地址（可选） | `https://api.openai.com/v1` |
 
-**Supported Model Providers:**
+**支持的模型提供商：**
 - OpenAI (GPT-4, GPT-4o)
 - Anthropic (Claude)
 - DeepSeek
-- Zhipu AI (GLM-4)
-- Local models (Ollama)
+- 智谱 AI (GLM-4)
+- 本地模型 (Ollama)
 
-### 2. Security Configuration
+### 2. 安全配置
 
-Go to **Security** page to configure security policies:
+进入 **安全 (Security)** 页面，配置安全策略：
 
-#### Security Gateway Settings
+#### 安全网关设置
 
-| Setting | Description |
-|---------|-------------|
-| Security Gateway URL | Third-party security detection API endpoint |
-| API Token | Authentication token for security API |
+| 配置项 | 说明 |
+|-------|------|
+| 安全网关接口 | 第三方安全检测 API 地址 |
+| API Token | 安全接口的认证令牌 |
 
-#### Bot Security Switches
+#### Bot 安全开关
 
-| Switch | Function |
-|--------|----------|
-| 🛡️ Tool Execution Confirmation | Medium/high risk operations require user confirmation |
-| 🌐 Network Isolation Mode | Block external network access |
-| 📁 File System Restriction | Limit file read/write scope |
-| 📝 Audit Logging | Record all tool calls |
-| ⏱️ Rate Limiting | Prevent API abuse |
+| 开关 | 功能 |
+|------|------|
+| 🛡️ 工具执行确认 | 中高风险操作需要用户确认 |
+| 🌐 网络隔离模式 | 禁止访问外部网络 |
+| 📁 文件系统限制 | 限制文件读写范围 |
+| 📝 审计日志 | 记录所有工具调用 |
+| ⏱️ 速率限制 | 防止 API 滥用 |
 
 ---
 
-## 🎮 Skill Demo: Game Code
+## 🎮 Skill 功能演示：Game Code
 
-**Game Code** is an HTML5 mini-game generator supporting template and AI generation modes.
+**Game Code** 是一个 HTML5 小游戏生成器，支持模板生成和 AI 智能生成两种模式。
 
-### Quick Access from Panel
+### 从面板快速使用
 
-1. Find **Agent → Skills** in the left menu
-2. Search `game` in the filter box
-3. Find the **game-code** skill card
-4. Fill in parameters and click **Execute**
+1. 在左侧菜单找到 **代理 → 技能**
+2. 在筛选框中搜索 `game`
+3. 找到 **game-code** 技能卡片
+4. 填写参数后点击 **执行** 按钮
 
-![Skill Panel - Game Code](docs/assets/screenshots/skill-panel-game-code.png)
+![Skill 面板 - Game Code](docs/assets/screenshots/skill-panel-game-code.png)
 
-**Parameters:**
+**参数说明：**
 
-| Parameter | Description | Example |
-|-----------|-------------|---------|
-| Output Directory | Where to save game files | `D:\games` |
-| Generation Mode | Template or AI generation | Template Mode (Quick classic games) |
-| Game Type | Select game template | Snake, Tetris, etc. |
-| Game Title | Custom game name (optional) | My Game |
+| 参数 | 说明 | 示例 |
+|------|------|------|
+| 输出目录 | 游戏文件保存位置 | `D:\games` |
+| 生成模式 | 模板模式或 AI 生成模式 | 模板模式 (快速生成经典游戏) |
+| 游戏类型 | 选择游戏模板 | 贪吃蛇、俄罗斯方块等 |
+| 游戏标题 | 自定义游戏名称（可选） | 我的小游戏 |
 
-**Game Preview:**
+**游戏效果预览：**
 
-![Tetris Game Demo](docs/assets/screenshots/tetris-game-demo.png)
+![俄罗斯方块游戏演示](docs/assets/screenshots/tetris-game-demo.png)
 
-### Overview
+### 功能概述
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    Game Code Skill                       │
+│                    Game Code Skill                      │
 ├─────────────────────────────────────────────────────────┤
-│  📦 Template Mode       │  🤖 AI Generation Mode         │
-│  ─────────────────      │  ─────────────────             │
-│  • Snake                │  • Natural language prompts    │
-│  • Tetris               │  • GPT-4o / Claude generates   │
-│  • Breakout             │  • Fully custom game logic     │
-│  • Pong                 │                                │
-│  • Flappy Bird          │                                │
-│  • Memory Match         │                                │
+│  📦 模板模式          │  🤖 AI 生成模式                  │
+│  ─────────────────    │  ─────────────────               │
+│  • 贪吃蛇 (snake)     │  • 自然语言描述需求              │
+│  • 俄罗斯方块 (tetris)│  • GPT-4o / Claude 生成代码      │
+│  • 打砖块 (breakout)  │  • 完全自定义游戏逻辑            │
+│  • 乒乓球 (pong)      │                                  │
+│  • 跳跃小鸟 (flappy)  │                                  │
+│  • 记忆翻牌 (memory)  │                                  │
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Usage
+### 命令行方式
 
-#### Method 1: Template Mode (Quick Generation)
+#### 方式一：模板模式（快速生成）
 
 ```bash
-# Generate Snake game
+# 生成贪吃蛇游戏
 python scripts/game_gen.py --mode template --type snake --output ~/games/snake
 
-# Generate Tetris
-python scripts/game_gen.py --mode template --type tetris --output ~/games/tetris --title "My Tetris"
+# 生成俄罗斯方块
+python scripts/game_gen.py --mode template --type tetris --output ~/games/tetris --title "我的俄罗斯方块"
 ```
 
-**Supported Game Templates:**
+**支持的游戏模板：**
 
-| Type | Game | Controls |
-|------|------|----------|
-| `snake` | 🐍 Snake | Arrow keys |
-| `tetris` | 🧱 Tetris | Arrows + Space |
-| `breakout` | 🧱 Breakout | Mouse/Touch |
-| `pong` | 🏓 Pong | W/S and ↑/↓ |
-| `flappy` | 🐦 Flappy Bird | Space/Click |
-| `memory` | 🃏 Memory Match | Mouse click |
+| 类型 | 游戏 | 控制方式 |
+|------|------|---------|
+| `snake` | 🐍 贪吃蛇 | 方向键 |
+| `tetris` | 🧱 俄罗斯方块 | 方向键 + 空格 |
+| `breakout` | 🧱 打砖块 | 鼠标/触屏 |
+| `pong` | 🏓 乒乓球 | W/S 和 ↑/↓ |
+| `flappy` | 🐦 跳跃小鸟 | 空格/点击 |
+| `memory` | 🃏 记忆翻牌 | 鼠标点击 |
 
-#### Method 2: AI Generation Mode (Custom Games)
+#### 方式二：AI 生成模式（自定义游戏）
 
 ```bash
-# Generate space shooter with GPT-4o
+# 使用 GPT-4o 生成太空射击游戏
 python scripts/game_gen.py --mode ai \
-  --prompt "Create a space shooter where player dodges asteroids and shoots enemies, with scoring and 3 lives" \
+  --prompt "创建一个太空射击游戏，玩家控制飞船躲避陨石并射击敌人，有计分系统和3条生命" \
   --output ~/games/space-shooter \
   --model gpt-4o
 
-# Generate 2048 with Claude
+# 使用 Claude 生成 2048 游戏
 python scripts/game_gen.py --mode ai \
-  --prompt "Make a 2048 number merge game with smooth sliding animations and touch support" \
+  --prompt "做一个2048数字合并游戏，要有漂亮的滑动动画效果，支持触屏操作" \
   --output ~/games/2048 \
   --model claude-3-5-sonnet
 ```
 
-**Supported AI Models:**
+**支持的 AI 模型：**
 
-| Model | Environment Variable | Features |
-|-------|---------------------|----------|
-| `gpt-4o` | `OPENAI_API_KEY` | High code quality, recommended |
-| `gpt-4o-mini` | `OPENAI_API_KEY` | Fast, low cost |
-| `claude-3-5-sonnet` | `ANTHROPIC_API_KEY` | Creative |
-| `deepseek-chat` | `DEEPSEEK_API_KEY` | Cost-effective |
+| 模型 | 环境变量 | 特点 |
+|------|----------|------|
+| `gpt-4o` | `OPENAI_API_KEY` | 代码质量高，推荐 |
+| `gpt-4o-mini` | `OPENAI_API_KEY` | 速度快，成本低 |
+| `claude-3-5-sonnet` | `ANTHROPIC_API_KEY` | 创意性强 |
+| `deepseek-chat` | `DEEPSEEK_API_KEY` | 性价比高 |
+
+### 输出结构
+
+每个游戏生成后，目录结构如下：
+
+```
+~/games/snake/
+├── index.html   # 游戏主页面（双击打开即可游玩）
+├── game.js      # 游戏逻辑代码
+└── style.css    # 游戏样式
+```
+
+### 演示：生成并运行贪吃蛇游戏
+
+```bash
+# 1. 生成游戏
+python scripts/game_gen.py --mode template --type snake --output ./my-snake-game
+
+# 2. 打开游戏（Windows）
+start ./my-snake-game/index.html
+
+# 2. 打开游戏（macOS）
+open ./my-snake-game/index.html
+```
 
 ---
 
-## 📋 Interface Navigation
+## 📋 界面导航
 
-| Menu | Function |
-|------|----------|
-| **Chat** | AI conversation interface |
-| **Overview** | System overview and status |
-| **Channels** | Messaging channel management (Telegram, Discord, etc.) |
-| **Instances** | Running instance monitoring |
-| **Sessions** | Session management |
-| **Cron** | Scheduled task configuration |
-| **Security** | Security policy configuration |
-| **Skills** | Skills/tools management |
-| **Nodes** | Node configuration |
-| **Config** | Global configuration |
-| **Debug** | Debug tools |
-| **Logs** | Log viewer |
+| 菜单 | 功能 |
+|------|------|
+| **Chat** | AI 对话界面 |
+| **Overview** | 系统概览和状态 |
+| **Channels** | 消息渠道管理 (Telegram, Discord 等) |
+| **Instances** | 运行实例监控 |
+| **Sessions** | 会话管理 |
+| **Cron** | 定时任务配置 |
+| **Security** | 安全策略配置 |
+| **Skills** | 技能/工具管理 |
+| **Nodes** | 节点配置 |
+| **Config** | 全局配置 |
+| **Debug** | 调试工具 |
+| **Logs** | 日志查看 |
 
 ---
 
-## 🔧 Troubleshooting
+## 🔧 故障排除
 
-### Gateway Startup Failed
+### Gateway 启动失败
 
-1. Check if port is in use:
+1. 检查端口是否被占用：
    ```powershell
    netstat -ano | findstr 18789
    ```
 
-2. Restart app or manually start Gateway:
+2. 重启应用或手动启动 Gateway：
    ```bash
    openclaw gateway run --port 18789 --bind loopback
    ```
 
-### Window Shows Blank
+### 窗口显示空白
 
-1. Wait for Gateway to fully start (~5-10 seconds)
-2. Check network connection
-3. Press `F12` to open DevTools and check errors
+1. 等待 Gateway 完全启动（约 5-10 秒）
+2. 检查网络连接
+3. 按 `F12` 打开开发者工具查看错误
 
-### Config File Locations
+### 配置文件位置
 
-| System | Path |
-|--------|------|
-| Windows | `C:\Users\<username>\.openclaw\openclaw.json` |
+| 系统 | 路径 |
+|------|------|
+| Windows | `C:\Users\<用户名>\.openclaw\openclaw.json` |
 | macOS | `~/.openclaw/openclaw.json` |
 | Linux | `~/.openclaw/openclaw.json` |
 
 ---
 
-## 📞 Get Help
+## 📞 获取帮助
 
-- 📖 [Full Documentation](https://docs.openclaw.ai)
-- 🐛 [Report Issues](https://github.com/IrvinZheng/openclaw_security/issues)
-- 💬 [Community Discussions](https://github.com/IrvinZheng/openclaw_security/discussions)
+- 📖 [openclaw文档](https://docs.openclaw.ai)
+- 🐛 [报告问题](https://github.com/IrvinZheng/openclaw_security/issues)
+- 💬 [社区讨论](https://github.com/IrvinZheng/openclaw_security/discussions)
 
 ---
 

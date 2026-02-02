@@ -24,20 +24,15 @@ function getOpenClawPath() {
     // 打包后使用 Electron 作为 Node.js 运行（需要设置 ELECTRON_RUN_AS_NODE=1）
     const nodePath = process.execPath;
     const nodeModulesPath = join(process.resourcesPath, "node_modules");
-    // bundle 放在 node_modules 目录内，这样 ESM 模块解析能正常工作
-    const bundlePath = join(nodeModulesPath, "openclaw-bundle.mjs");
-    if (existsSync(bundlePath)) {
-      return { 
-        node: nodePath, 
-        entry: bundlePath, 
-        cwd: nodeModulesPath,  // 设置工作目录为 node_modules
-        runAsNode: true  // 标记需要设置 ELECTRON_RUN_AS_NODE
-      };
-    }
-    // 回退到旧的 entry.js（兼容性）
     const entryPath = join(process.resourcesPath, "openclaw-dist", "entry.js");
     if (existsSync(entryPath)) {
-      return { node: nodePath, entry: entryPath, runAsNode: true };
+      return { 
+        node: nodePath, 
+        entry: entryPath, 
+        cwd: process.resourcesPath,  // 设置工作目录为 resources
+        nodeModules: nodeModulesPath,
+        runAsNode: true  // 标记需要设置 ELECTRON_RUN_AS_NODE
+      };
     }
   }
   
