@@ -48,17 +48,20 @@
         "filter": ["**/*"]
       },
       {
-        "from": "../../dist",
-        "to": "openclaw-dist",
-        "filter": ["**/*.js", "**/*.json", "!control-ui/**"]
+        "from": "packaged-openclaw",
+        "to": "openclaw",
+        "filter": ["**/*"]
       },
       {
         "from": "../../skills",
         "to": "skills",
         "filter": ["**/*.md", "**/*.py", "**/*.sh", "**/*.txt", "**/*.toml"]
+      },
+      {
+        "from": "nodejs/node.exe",
+        "to": "nodejs/node.exe"
       }
     ],
-    "asarUnpack": ["**/*.node", "**/*.exe", "**/*.dll"],
     "win": {
       "target": [
         {

@@ -21,17 +21,28 @@ function getResourcePath(...paths) {
 // 获取 openclaw CLI 路径
 function getOpenClawPath() {
   if (isPackaged) {
-    // 打包后使用 Electron 作为 Node.js 运行（需要设置 ELECTRON_RUN_AS_NODE=1）
-    const nodePath = process.execPath;
-    const nodeModulesPath = join(process.resourcesPath, "node_modules");
-    const entryPath = join(process.resourcesPath, "openclaw-dist", "entry.js");
-    if (existsSync(entryPath)) {
+    // 打包后使用嵌入的独立 Node.js + entry.js（完整 dist 目录）
+    const nodePath = join(process.resourcesPath, "nodejs", "node.exe");
+    const openclawRoot = join(process.resourcesPath, "openclaw");
+    const entryPath = join(openclawRoot, "dist", "entry.js");
+    
+    // 优先使用完整的 openclaw 目录（包含 dist + node_modules）
+    if (existsSync(nodePath) && existsSync(entryPath)) {
       return { 
         node: nodePath, 
         entry: entryPath, 
-        cwd: process.resourcesPath,  // 设置工作目录为 resources
-        nodeModules: nodeModulesPath,
-        runAsNode: true  // 标记需要设置 ELECTRON_RUN_AS_NODE
+        cwd: openclawRoot
+      };
+    }
+    
+    // 回退：旧版兼容路径
+    const legacyEntryPath = join(process.resourcesPath, "openclaw-dist", "entry.js");
+    if (existsSync(nodePath) && existsSync(legacyEntryPath)) {
+      return { 
+        node: nodePath, 
+        entry: legacyEntryPath, 
+        cwd: process.resourcesPath,
+        nodeModules: join(process.resourcesPath, "node_modules")
       };
     }
   }
@@ -58,7 +69,7 @@ function getIconPath() {
     try {
       const icon = nativeImage.createFromPath(iconPath);
       if (!icon.isEmpty()) {
-        console.log("使用图标:", iconPath);
+        console.log("Using icon:", iconPath);
         return iconPath;
       }
     } catch (err) {
@@ -72,6 +83,16 @@ let mainWindow = null;
 let cliProcess = null;
 let gatewayProcess = null;
 let gatewayWaitInterval = null;
+let gatewayStartupResolved = false;
+
+// Windows 上获取正确的命令名
+function getPnpmCmd() {
+  return process.platform === "win32" ? "pnpm.cmd" : "pnpm";
+}
+
+function getNodeCmd() {
+  return process.platform === "win32" ? "node.exe" : "node";
+}
 
 function createWindow() {
   const primaryDisplay = screen.getPrimaryDisplay();
@@ -108,7 +129,7 @@ function createWindow() {
   // 确保窗口在 2 秒内显示（防止卡住）
   const showWindowTimeout = setTimeout(() => {
     if (mainWindow && !mainWindow.isVisible()) {
-      console.log("强制显示窗口（超时保护）");
+      console.log("Force show window (timeout protection)");
       mainWindow.show();
     }
   }, 2000);
@@ -127,7 +148,7 @@ function createWindow() {
         controlUiUrl = `http://127.0.0.1:18789/?token=${encodeURIComponent(token)}`;
       }
     } catch (err) {
-      console.warn("读取配置失败:", err.message);
+      console.warn("Failed to read config:", err.message);
     }
     
     // 检查 Gateway 是否在运行（可配置超时）
@@ -151,11 +172,11 @@ function createWindow() {
       mainWindow?.webContents?.send("gateway-status", status, detail);
     };
     
-    // 快速检查是否已经在运行（3秒超时，快速失败）
+    // 快速检查是否已经在运行（1.5秒超时，快速失败）
     updateStatus("正在检查 Gateway", "Quick check...");
-    if (await checkGateway(3000)) {
+    if (await checkGateway(1500)) {
       updateStatus("Gateway 已就绪", "Connecting...");
-      setTimeout(() => mainWindow.loadURL(controlUiUrl), 500);
+      setTimeout(() => mainWindow.loadURL(controlUiUrl), 200);
       return;
     }
     
@@ -166,43 +187,52 @@ function createWindow() {
       gatewayProcess.kill();
     }
     
+    // 重置启动状态标志
+    gatewayStartupResolved = false;
+    
     const openclawInfo = getOpenClawPath();
     const gatewayArgs = ["gateway", "run", "--port", "18789", "--bind", "loopback"];
     
+    // 通用 spawn 选项
+    const spawnOpts = {
+      detached: false,
+      stdio: ["ignore", "pipe", "pipe"],
+      cwd: openclawInfo.cwd,
+      windowsHide: true,  // Windows 上隐藏命令行窗口
+    };
+    
     if (openclawInfo.usePnpm) {
       // 开发模式：使用 pnpm openclaw
-      gatewayProcess = spawn("pnpm", ["openclaw", ...gatewayArgs], {
-        shell: true,
-        detached: false,
-        stdio: ["ignore", "pipe", "pipe"],
-        cwd: openclawInfo.cwd,
+      // Windows 上执行 .cmd 文件需要 shell: true
+      gatewayProcess = spawn(getPnpmCmd(), ["openclaw", ...gatewayArgs], {
+        ...spawnOpts,
+        shell: process.platform === "win32",
       });
     } else if (openclawInfo.useNode) {
-      // 开发模式：直接用 node 运行 entry.js
-      gatewayProcess = spawn("node", [openclawInfo.entry, ...gatewayArgs], {
-        detached: false,
-        stdio: ["ignore", "pipe", "pipe"],
-        cwd: openclawInfo.cwd,
-      });
+      // 开发模式：直接用 node 运行 entry.js（无需 shell）
+      gatewayProcess = spawn(getNodeCmd(), [openclawInfo.entry, ...gatewayArgs], spawnOpts);
     } else {
-      // 打包模式：使用 Electron 作为 Node.js
+      // 打包模式：使用嵌入的独立 Node.js
       const env = { ...process.env, NODE_ENV: "production" };
-      if (openclawInfo.runAsNode) {
-        env.ELECTRON_RUN_AS_NODE = "1";  // 让 Electron 作为纯 Node.js 运行
+      if (openclawInfo.nodeModules) {
+        env.NODE_PATH = openclawInfo.nodeModules;
       }
       gatewayProcess = spawn(openclawInfo.node, [openclawInfo.entry, ...gatewayArgs], {
-        detached: false,
-        stdio: ["ignore", "pipe", "pipe"],
+        ...spawnOpts,
         env,
-        cwd: openclawInfo.cwd,  // 在 node_modules 目录下运行
       });
     }
     
+    console.log(`[Gateway] Command: ${openclawInfo.usePnpm ? "pnpm openclaw" : openclawInfo.useNode ? "node entry.js" : "embedded node"}`);
+    console.log(`[Gateway] Working dir: ${openclawInfo.cwd}`);
+    
     gatewayProcess.stdout.on("data", (data) => {
       const text = data.toString();
-      console.log("[Gateway]", text);
-      // 检测到 Gateway 正在监听端口时，立即加载 UI
-      if (text.includes("listening") || text.includes(":18789")) {
+      console.log("[Gateway]", text.trimEnd());
+      // 检测到 Gateway 正在监听端口时，立即加载 UI（只触发一次）
+      // 匹配 "listening on ws://..." 或 "listening on wss://..."
+      if (!gatewayStartupResolved && (text.includes("listening on") || text.includes(":18789"))) {
+        gatewayStartupResolved = true;
         updateStatus("Gateway 已就绪", "Loading Control UI...");
         // 停止等待循环
         if (gatewayWaitInterval) {
@@ -210,7 +240,7 @@ function createWindow() {
           gatewayWaitInterval = null;
         }
         // 立即加载 Control UI
-        setTimeout(() => mainWindow.loadURL(controlUiUrl), 300);
+        setTimeout(() => mainWindow?.loadURL(controlUiUrl), 300);
       }
     });
     
@@ -222,41 +252,60 @@ function createWindow() {
     });
     
     gatewayProcess.on("error", (err) => {
-      console.error("Gateway 启动失败:", err);
+      console.error("Gateway start failed:", err);
       updateStatus("Gateway 启动失败", err.message);
     });
     
     gatewayProcess.on("exit", (code, signal) => {
-      console.log(`[Gateway] 进程退出: code=${code}, signal=${signal}`);
+      console.log(`[Gateway] Process exited: code=${code}, signal=${signal}`);
       if (code !== 0 && code !== null) {
         updateStatus("Gateway 异常退出", `退出码: ${code}`);
       }
     });
     
-    // 等待 Gateway 就绪
-    updateStatus("等待 Gateway 就绪", "Checking health...");
+    // 等待 Gateway 就绪（主要依赖 stdout 检测，健康检查作为备用）
+    updateStatus("等待 Gateway 就绪", "Starting...");
     
     let attempts = 0;
-    const maxAttempts = 60; // 最多等待 60 秒（1分钟）
+    const maxAttempts = 30; // 最多等待 30 秒（减少等待时间）
     
     // 清除之前的等待循环（如果有）
     if (gatewayWaitInterval) {
       clearInterval(gatewayWaitInterval);
     }
     
+    // 给 stdout 检测一些时间先工作（500ms 后再开始健康检查轮询）
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // 如果 stdout 已经检测到启动成功，不需要继续轮询
+    if (gatewayStartupResolved) {
+      console.log("[Gateway] Startup detected via stdout");
+      return;
+    }
+    
     gatewayWaitInterval = setInterval(async () => {
-      attempts++;
-      updateStatus("等待 Gateway 就绪", `Attempt ${attempts}/${maxAttempts}...`);
+      // 如果 stdout 已经检测到启动成功，停止轮询
+      if (gatewayStartupResolved) {
+        clearInterval(gatewayWaitInterval);
+        gatewayWaitInterval = null;
+        return;
+      }
       
-      if (await checkGateway(5000)) { // 5秒超时用于轮询检查
+      attempts++;
+      updateStatus("等待 Gateway 就绪", `Checking... (${attempts}/${maxAttempts})`);
+      
+      if (await checkGateway(2000)) { // 2秒超时用于轮询检查（减少超时时间）
+        if (gatewayStartupResolved) return; // 防止重复触发
+        gatewayStartupResolved = true;
         clearInterval(gatewayWaitInterval);
         gatewayWaitInterval = null;
         updateStatus("Gateway 已就绪", "Loading Control UI...");
-        setTimeout(() => mainWindow.loadURL(controlUiUrl), 300);
+        setTimeout(() => mainWindow?.loadURL(controlUiUrl), 300);
       } else if (attempts >= maxAttempts) {
         clearInterval(gatewayWaitInterval);
         gatewayWaitInterval = null;
         updateStatus("Gateway 启动超时", "请检查日志或重启应用");
+        console.error("[Gateway] Startup timeout. Check if dist/entry.js exists or run pnpm build");
       }
     }, 1000);
   }
@@ -271,7 +320,7 @@ function createWindow() {
   
   // 页面加载失败时的错误处理
   mainWindow.webContents.on("did-fail-load", (event, errorCode, errorDescription) => {
-    console.error(`页面加载失败: ${errorCode} - ${errorDescription}`);
+    console.error(`Page load failed: ${errorCode} - ${errorDescription}`);
     clearTimeout(showWindowTimeout);
     mainWindow.show();
   });
@@ -377,7 +426,7 @@ ipcMain.handle("save-config", async (_event, config) => {
     } catch (err) {
       // 文件不存在或解析失败，使用空配置
       if (err.code !== "ENOENT") {
-        console.warn("读取现有配置失败，将创建新配置:", err.message);
+        console.warn("Failed to read existing config, creating new:", err.message);
       }
     }
     
@@ -388,7 +437,7 @@ ipcMain.handle("save-config", async (_event, config) => {
     await writeFile(CONFIG_PATH, JSON.stringify(mergedConfig, null, 2), "utf-8");
     return true;
   } catch (err) {
-    console.error("保存配置失败:", err);
+    console.error("Failed to save config:", err);
     throw err;
   }
 });
@@ -420,26 +469,29 @@ ipcMain.handle("execute-cli", async (_event, args) => {
   return new Promise((resolve, reject) => {
     const openclawInfo = getOpenClawPath();
     
+    // 通用 spawn 选项
+    const spawnOpts = {
+      stdio: ["ignore", "pipe", "pipe"],
+      cwd: openclawInfo.cwd,
+      windowsHide: true,
+    };
+    
     if (openclawInfo.usePnpm) {
-      cliProcess = spawn("pnpm", ["openclaw", ...args], {
-        shell: true,
-        stdio: ["ignore", "pipe", "pipe"],
-        cwd: openclawInfo.cwd,
+      // Windows 上执行 .cmd 文件需要 shell: true
+      cliProcess = spawn(getPnpmCmd(), ["openclaw", ...args], {
+        ...spawnOpts,
+        shell: process.platform === "win32",
       });
     } else if (openclawInfo.useNode) {
-      cliProcess = spawn("node", [openclawInfo.entry, ...args], {
-        stdio: ["ignore", "pipe", "pipe"],
-        cwd: openclawInfo.cwd,
-      });
+      cliProcess = spawn(getNodeCmd(), [openclawInfo.entry, ...args], spawnOpts);
     } else {
       const env = { ...process.env, NODE_ENV: "production" };
-      if (openclawInfo.runAsNode) {
-        env.ELECTRON_RUN_AS_NODE = "1";
+      if (openclawInfo.nodeModules) {
+        env.NODE_PATH = openclawInfo.nodeModules;
       }
       cliProcess = spawn(openclawInfo.node, [openclawInfo.entry, ...args], {
-        stdio: ["ignore", "pipe", "pipe"],
+        ...spawnOpts,
         env,
-        cwd: openclawInfo.cwd,
       });
     }
 
@@ -480,29 +532,30 @@ ipcMain.handle("start-gateway", async (_event) => {
     const openclawInfo = getOpenClawPath();
     const gatewayArgs = ["gateway", "--port", "18789", "--bind", "lan", "--verbose"];
     
+    // 通用 spawn 选项
+    const spawnOpts = {
+      detached: false,
+      stdio: ["ignore", "pipe", "pipe"],
+      cwd: openclawInfo.cwd,
+      windowsHide: true,
+    };
+    
     if (openclawInfo.usePnpm) {
-      gatewayProcess = spawn("pnpm", ["openclaw", ...gatewayArgs], {
-        shell: true,
-        detached: false,
-        stdio: ["ignore", "pipe", "pipe"],
-        cwd: openclawInfo.cwd,
+      // Windows 上执行 .cmd 文件需要 shell: true
+      gatewayProcess = spawn(getPnpmCmd(), ["openclaw", ...gatewayArgs], {
+        ...spawnOpts,
+        shell: process.platform === "win32",
       });
     } else if (openclawInfo.useNode) {
-      gatewayProcess = spawn("node", [openclawInfo.entry, ...gatewayArgs], {
-        detached: false,
-        stdio: ["ignore", "pipe", "pipe"],
-        cwd: openclawInfo.cwd,
-      });
+      gatewayProcess = spawn(getNodeCmd(), [openclawInfo.entry, ...gatewayArgs], spawnOpts);
     } else {
       const env = { ...process.env, NODE_ENV: "production" };
-      if (openclawInfo.runAsNode) {
-        env.ELECTRON_RUN_AS_NODE = "1";
+      if (openclawInfo.nodeModules) {
+        env.NODE_PATH = openclawInfo.nodeModules;
       }
       gatewayProcess = spawn(openclawInfo.node, [openclawInfo.entry, ...gatewayArgs], {
-        detached: false,
-        stdio: ["ignore", "pipe", "pipe"],
+        ...spawnOpts,
         env,
-        cwd: openclawInfo.cwd,
       });
     }
 
@@ -530,7 +583,7 @@ ipcMain.handle("start-gateway", async (_event) => {
             // 忽略错误，使用默认 URL
           }
           shell.openExternal(controlUiUrl).catch((err) => {
-            console.error("打开浏览器失败:", err);
+            console.error("Failed to open browser:", err);
           });
         }, 1000);
       }
@@ -560,22 +613,22 @@ ipcMain.handle("start-gateway", async (_event) => {
           if (token) {
             controlUiUrl = `http://127.0.0.1:18789/?token=${encodeURIComponent(token)}`;
           } else {
-            console.warn("未找到 Gateway token，可能需要手动输入");
+            console.warn("Gateway token not found, may need manual input");
           }
         } catch (err) {
           // 配置文件不存在或读取失败，使用默认 URL
-          console.warn("读取配置失败，使用默认 URL:", err.message);
+          console.warn("Failed to read config, using default URL:", err.message);
         }
         
-        // 自动打开 Control UI
+        // Open Control UI
         shell.openExternal(controlUiUrl).catch((err) => {
-          console.error("打开浏览器失败:", err);
+          console.error("Failed to open browser:", err);
         });
-        resolve({ success: true, message: "Gateway 启动成功", pid: gatewayProcess.pid });
+        resolve({ success: true, message: "Gateway started", pid: gatewayProcess.pid });
       } else {
-        reject(new Error("Gateway 启动失败"));
+        reject(new Error("Gateway start failed"));
       }
-    }, 15000); // 15秒等待时间（5倍），确保 Gateway 完全启动
+    }, 5000); // 5秒等待时间，确保 Gateway 启动
   });
 });
 

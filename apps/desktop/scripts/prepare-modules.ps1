@@ -17,14 +17,16 @@ if (Test-Path $outputDir) {
 }
 New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
 
-# 需要复制的模块列表 (external 模块 - 主要是 native 模块)
+# 需要复制的模块列表 (pnpm 路径 -> 目标名称)
 $modules = @(
-    @{ name = "sharp"; pnpmPath = "sharp@0.34.5/node_modules/sharp" },
-    @{ name = "@img/sharp-win32-x64"; pnpmPath = "@img+sharp-win32-x64@0.34.5/node_modules/@img/sharp-win32-x64" },
-    @{ name = "sqlite-vec"; pnpmPath = "sqlite-vec@0.1.7-alpha.2/node_modules/sqlite-vec" },
-    @{ name = "sqlite-vec-windows-x64"; pnpmPath = "sqlite-vec-windows-x64@0.1.7-alpha.2/node_modules/sqlite-vec-windows-x64" },
-    @{ name = "@mariozechner/clipboard"; pnpmPath = "@mariozechner+clipboard@0.3.0/node_modules/@mariozechner/clipboard" },
-    @{ name = "@mariozechner/clipboard-win32-x64-msvc"; pnpmPath = "@mariozechner+clipboard-win32-x64-msvc@0.3.0/node_modules/@mariozechner/clipboard-win32-x64-msvc" }
+    @{ pnpm = "sharp@0.34.5/node_modules/sharp"; name = "sharp" },
+    @{ pnpm = "@img+sharp-win32-x64@0.34.5/node_modules/@img/sharp-win32-x64"; name = "@img/sharp-win32-x64" },
+    @{ pnpm = "sqlite-vec@0.1.7-alpha.2/node_modules/sqlite-vec"; name = "sqlite-vec" },
+    @{ pnpm = "sqlite-vec-windows-x64@0.1.7-alpha.2/node_modules/sqlite-vec-windows-x64"; name = "sqlite-vec-windows-x64" },
+    @{ pnpm = "@mariozechner+clipboard@0.3.0/node_modules/@mariozechner/clipboard"; name = "@mariozechner/clipboard" },
+    @{ pnpm = "@mariozechner+clipboard-win32-x64-msvc@0.3.0/node_modules/@mariozechner/clipboard-win32-x64-msvc"; name = "@mariozechner/clipboard-win32-x64-msvc" },
+    @{ pnpm = "@lydell+node-pty@1.2.0-beta.3/node_modules/@lydell/node-pty"; name = "@lydell/node-pty" },
+    @{ pnpm = "@lydell+node-pty-win32-x64@1.2.0-beta.3/node_modules/@lydell/node-pty-win32-x64"; name = "@lydell/node-pty-win32-x64" }
 )
 
 # 在 outputDir 下创建 node_modules 目录
@@ -32,7 +34,7 @@ $nodeModulesDir = "$outputDir\node_modules"
 New-Item -ItemType Directory -Path $nodeModulesDir -Force | Out-Null
 
 foreach ($mod in $modules) {
-    $srcPath = "$rootDir\node_modules\.pnpm\$($mod.pnpmPath)"
+    $srcPath = "$rootDir\node_modules\.pnpm\$($mod.pnpm)"
     $destPath = "$nodeModulesDir\$($mod.name)"
     
     if (Test-Path $srcPath) {

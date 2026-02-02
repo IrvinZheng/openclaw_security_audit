@@ -1509,6 +1509,26 @@
   color: var(--accent);
 }
 
+.badge--muted {
+  background: var(--secondary);
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* Disabled label policy row */
+.label-policy-row--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.label-policy-row--disabled:hover {
+  background: var(--bg-elevated);
+}
+
+.label-policy-row__name--disabled {
+  color: var(--muted);
+}
+
 /* Small segmented control */
 .cfg-segmented--sm {
   gap: 2px;

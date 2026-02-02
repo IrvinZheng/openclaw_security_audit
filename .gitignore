@@ -73,3 +73,6 @@ USER.md
 .serena/
 *.exe
 apps/desktop/packaged-modules/
+apps/desktop/packaged-openclaw/
+apps/desktop/packaged-openclaw-pnpm/
+apps/desktop/nodejs/

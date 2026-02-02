@@ -6,20 +6,20 @@ type Lang = "zh" | "en";
 const i18n = {
   zh: {
     // Content Audit
-    contentAuditTitle: "内容安全审计",
-    contentAuditDesc: "对消息内容进行安全审计，检测违规内容",
-    enableContentAudit: "启用内容审计",
-    enableContentAuditHelp: "启用后，所有消息将通过内容审计服务检查",
+    contentAuditTitle: "风险审计",
+    contentAuditDesc: "实时检测和识别对话中的潜在风险内容",
+    enableContentAudit: "启用风险审计",
+    enableContentAuditHelp: "启用后，所有消息将通过风险审计服务检查",
     auditApiUrl: "审计接口URL",
     auditApiUrlPlaceholder: "http://your-audit-api.com/api/token/deduct",
-    auditApiUrlHelp: "内容审计服务的API端点",
+    auditApiUrlHelp: "风险审计服务的API端点",
     auditApiToken: "审计接口Token",
     auditApiTokenPlaceholder: "sk-xxx",
     auditApiTokenHelp: "用于身份验证的API密钥",
     auditTimeout: "超时时间 (毫秒)",
-    auditTimeoutHelp: "内容审计的最大等待时间",
-    labelPoliciesTitle: "内容标签策略",
-    labelPoliciesDesc: "配置不同内容标签的处理策略",
+    auditTimeoutHelp: "风险审计的最大等待时间",
+    labelPoliciesTitle: "风险管控策略",
+    labelPoliciesDesc: "配置不同风险类型的响应策略",
     labelNormal: "合规内容",
     labelPorn: "色情内容",
     labelPolitics: "政治内容",
@@ -27,6 +27,12 @@ const i18n = {
     labelIllegal: "违禁内容",
     labelDiscrimination: "歧视内容",
     labelUnethical: "不良内容",
+    labelInjection: "注入攻击检测",
+    labelPrivilege: "越权行为监控",
+    labelPrivacy: "隐私信息加密",
+    labelBehavior: "行为合理性分析",
+    labelHallucination: "模型幻觉检测",
+    comingSoon: "敬请期待",
     actionAllow: "放行",
     actionConfirm: "确认",
     actionBlock: "阻止",
@@ -90,6 +96,12 @@ const i18n = {
     labelIllegal: "Illegal",
     labelDiscrimination: "Discrimination",
     labelUnethical: "Unethical",
+    labelInjection: "Injection Attack Detection",
+    labelPrivilege: "Privilege Escalation Monitor",
+    labelPrivacy: "Privacy Data Encryption",
+    labelBehavior: "Behavior Rationality Analysis",
+    labelHallucination: "Model Hallucination Detection",
+    comingSoon: "Coming Soon",
     actionAllow: "Allow",
     actionConfirm: "Confirm",
     actionBlock: "Block",
@@ -194,6 +206,26 @@ const DEFAULT_LABEL_POLICIES: Record<string, { action: ContentLabelAction; risk:
   discrimination: { action: "confirm", risk: "high" },
   unethical: { action: "confirm", risk: "medium" },
 };
+
+// Render a disabled "coming soon" row
+function renderDisabledLabelPolicyRow(
+  t: (typeof i18n)["zh"],
+  labelName: string,
+) {
+  return html`
+    <div class="label-policy-row label-policy-row--disabled">
+      <div class="label-policy-row__info">
+        <span class="label-policy-row__name label-policy-row__name--disabled">${labelName}</span>
+        <span class="badge badge--muted">${t.comingSoon}</span>
+      </div>
+      <div class="cfg-segmented cfg-segmented--sm">
+        <button type="button" class="cfg-segmented__btn" disabled>${t.actionAllow}</button>
+        <button type="button" class="cfg-segmented__btn" disabled>${t.actionConfirm}</button>
+        <button type="button" class="cfg-segmented__btn" disabled>${t.actionBlock}</button>
+      </div>
+    </div>
+  `;
+}
 
 function renderLabelPolicyRow(
   props: SecurityProps,
@@ -422,6 +454,11 @@ export function renderSecurity(props: SecurityProps) {
             ${renderLabelPolicyRow(props, t, "illegal", t.labelIllegal, DEFAULT_LABEL_POLICIES.illegal)}
             ${renderLabelPolicyRow(props, t, "discrimination", t.labelDiscrimination, DEFAULT_LABEL_POLICIES.discrimination)}
             ${renderLabelPolicyRow(props, t, "unethical", t.labelUnethical, DEFAULT_LABEL_POLICIES.unethical)}
+            ${renderDisabledLabelPolicyRow(t, t.labelInjection)}
+            ${renderDisabledLabelPolicyRow(t, t.labelPrivilege)}
+            ${renderDisabledLabelPolicyRow(t, t.labelPrivacy)}
+            ${renderDisabledLabelPolicyRow(t, t.labelBehavior)}
+            ${renderDisabledLabelPolicyRow(t, t.labelHallucination)}
           </div>
         </div>
       </div>
