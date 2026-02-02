@@ -1,9 +1,9 @@
 [English](README-EN.md) | [中文](README.md)
 
-# OpenClaw 安全审计版
+# TrustClaw 安全审计版
 
 <p align="center">
-  <img src="apps/desktop/renderer/logo.png" alt="OpenClaw Logo" width="120" />
+  <img src="apps/desktop/renderer/logo.png" alt="TrustClaw Logo" width="120" />
 </p>
 
 <p align="center">
@@ -25,7 +25,7 @@
 
 ### 📮 如何领取
 
-前往 **[免费 Token 领取通道](https://github.com/IrvinZheng/openclaw_security/issues/1)**，按格式留下你的信息，我们会在 0-3 个工作日内审核并通过邮件发送 Token。
+前往 **[免费 Token 领取通道](https://github.com/IrvinZheng/trustclaw_security/issues/1)**，按格式留下你的信息，我们会在 0-3 个工作日内审核并通过邮件发送 Token。
 
 <p align="center">
   <a href="https://github.com/IrvinZheng/openclaw_security/issues/1">
@@ -43,7 +43,7 @@
    
    从 [Releases](../../releases) 页面下载最新版本：
    ```
-   OpenClaw-SecurityAudit-Setup-2026.x.xx.exe
+   TrustClaw-SecurityAudit-Setup-2026.x.xx.exe
    ```
 
 2. **运行安装程序**
@@ -51,7 +51,7 @@
    - 双击 `.exe` 文件启动安装向导
    - 选择安装目录（默认即可）
    - 点击「安装」等待完成
-   - 勾选「运行 OpenClaw SecurityAudit」后点击「完成」
+   - 勾选「运行 TrustClaw SecurityAudit」后点击「完成」
 
 3. **首次启动**
    
@@ -64,8 +64,8 @@
 
 1. **下载 DMG**
    ```
-   OpenClaw-SecurityAudit-2026.x.xx-arm64.dmg  # Apple Silicon
-   OpenClaw-SecurityAudit-2026.x.xx-x64.dmg    # Intel
+   TrustClaw-SecurityAudit-2026.x.xx-arm64.dmg  # Apple Silicon
+   TrustClaw-SecurityAudit-2026.x.xx-x64.dmg    # Intel
    ```
 
 2. **安装应用**
@@ -90,8 +90,8 @@
 ### 步骤一：克隆仓库
 
 ```bash
-git clone https://github.com/IrvinZheng/openclaw_security.git
-cd openclaw_security
+git clone https://github.com/IrvinZheng/trustclaw_security.git
+cd trustclaw_security
 ```
 
 ### 步骤二：安装依赖
@@ -150,7 +150,7 @@ npm run dev
 ### 目录结构
 
 ```
-openclaw_security/
+trustclaw_security/
 ├── src/                    # 核心源代码
 │   ├── cli/                # CLI 命令
 │   ├── gateway/            # Gateway 服务
@@ -230,7 +230,7 @@ npm install
 确保已完成主项目构建：
 
 ```bash
-cd /path/to/openclaw_security
+cd /path/to/trustclaw_security
 pnpm build
 ```
 
@@ -243,7 +243,7 @@ pnpm build
 首次启动时，系统会自动生成 Gateway Token 并保存到配置文件：
 
 ```
-~/.openclaw/openclaw.json  (用户配置)
+~/.trustclaw/trustclaw.json  (用户配置)
 ```
 
 配置文件示例：
@@ -450,7 +450,7 @@ open ./my-snake-game/index.html
 
 2. 重启应用或手动启动 Gateway：
    ```bash
-   openclaw gateway run --port 18789 --bind loopback
+   trustclaw gateway run --port 18789 --bind loopback
    ```
 
 ### 窗口显示空白
@@ -463,20 +463,20 @@ open ./my-snake-game/index.html
 
 | 系统 | 路径 |
 |------|------|
-| Windows | `C:\Users\<用户名>\.openclaw\openclaw.json` |
-| macOS | `~/.openclaw/openclaw.json` |
-| Linux | `~/.openclaw/openclaw.json` |
+| Windows | `C:\Users\<用户名>\.trustclaw\trustclaw.json` |
+| macOS | `~/.trustclaw/trustclaw.json` |
+| Linux | `~/.trustclaw/trustclaw.json` |
 
 ---
 
 ## 📞 获取帮助
 
-- 📖 [openclaw文档](https://docs.openclaw.ai)
-- 🐛 [报告问题](https://github.com/IrvinZheng/openclaw_security/issues)
-- 💬 [社区讨论](https://github.com/IrvinZheng/openclaw_security/discussions)
+- 📖 [TrustClaw文档](https://docs.trustclaw.ai)
+- 🐛 [报告问题](https://github.com/IrvinZheng/trustclaw_security/issues)
+- 💬 [社区讨论](https://github.com/IrvinZheng/trustclaw_security/discussions)
 
 ---
 
 <p align="center">
-  <sub>Built with ❤️ by OpenClaw Team</sub>
+  <sub>Built with ❤️ by TrustClaw Team</sub>
 </p>

@@ -1,5 +1,6 @@
 import { html } from "lit";
 
+import type { Lang } from "../i18n";
 import type { ConfigUiHints } from "../types";
 import type { ChannelsProps } from "./channels.types";
 import {
@@ -15,6 +16,7 @@ type ChannelConfigFormProps = {
   schema: unknown | null;
   uiHints: ConfigUiHints;
   disabled: boolean;
+  lang?: Lang;
   onPatch: (path: Array<string | number>, value: unknown) => void;
 };
 
@@ -68,14 +70,23 @@ function resolveChannelValue(
 }
 
 export function renderChannelConfigForm(props: ChannelConfigFormProps) {
+  const lang = props.lang ?? "zh";
+  const txt = lang === "zh" ? {
+    schemaUnavailable: "配置模式不可用，请使用原始模式。",
+    channelSchemaUnavailable: "频道配置模式不可用。",
+  } : {
+    schemaUnavailable: "Schema unavailable. Use Raw.",
+    channelSchemaUnavailable: "Channel config schema unavailable.",
+  };
+  
   const analysis = analyzeConfigSchema(props.schema);
   const normalized = analysis.schema;
   if (!normalized) {
-    return html`<div class="callout danger">Schema unavailable. Use Raw.</div>`;
+    return html`<div class="callout danger">${txt.schemaUnavailable}</div>`;
   }
   const node = resolveSchemaNode(normalized, ["channels", props.channelId]);
   if (!node) {
-    return html`<div class="callout danger">Channel config schema unavailable.</div>`;
+    return html`<div class="callout danger">${txt.channelSchemaUnavailable}</div>`;
   }
   const configValue = props.configValue ?? {};
   const value = resolveChannelValue(configValue, props.channelId);
@@ -100,17 +111,31 @@ export function renderChannelConfigSection(params: {
   props: ChannelsProps;
 }) {
   const { channelId, props } = params;
+  const lang = props.lang ?? "zh";
+  const txt = lang === "zh" ? {
+    loadingSchema: "正在加载配置模式…",
+    saving: "保存中…",
+    save: "保存",
+    reload: "重新加载",
+  } : {
+    loadingSchema: "Loading config schema…",
+    saving: "Saving…",
+    save: "Save",
+    reload: "Reload",
+  };
+  
   const disabled = props.configSaving || props.configSchemaLoading;
   return html`
     <div style="margin-top: 16px;">
       ${props.configSchemaLoading
-        ? html`<div class="muted">Loading config schema…</div>`
+        ? html`<div class="muted">${txt.loadingSchema}</div>`
         : renderChannelConfigForm({
             channelId,
             configValue: props.configForm,
             schema: props.configSchema,
             uiHints: props.configUiHints,
             disabled,
+            lang,
             onPatch: props.onConfigPatch,
           })}
       <div class="row" style="margin-top: 12px;">
@@ -119,14 +144,14 @@ export function renderChannelConfigSection(params: {
           ?disabled=${disabled || !props.configFormDirty}
           @click=${() => props.onConfigSave()}
         >
-          ${props.configSaving ? "Saving…" : "Save"}
+          ${props.configSaving ? txt.saving : txt.save}
         </button>
         <button
           class="btn"
           ?disabled=${disabled}
           @click=${() => props.onConfigReload()}
         >
-          Reload
+          ${txt.reload}
         </button>
       </div>
     </div>

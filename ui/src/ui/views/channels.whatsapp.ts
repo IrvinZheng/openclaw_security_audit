@@ -12,32 +12,69 @@ export function renderWhatsAppCard(params: {
   accountCountLabel: unknown;
 }) {
   const { props, whatsapp, accountCountLabel } = params;
+  const lang = props.lang ?? "zh";
+  
+  const txt = lang === "zh" ? {
+    sub: "关联 WhatsApp Web 并监控连接状态",
+    configured: "已配置",
+    linked: "已关联",
+    running: "运行中",
+    connected: "已连接",
+    lastConnect: "最后连接",
+    lastMessage: "最后消息",
+    authAge: "认证时长",
+    yes: "是",
+    no: "否",
+    working: "处理中…",
+    showQR: "显示二维码",
+    relink: "重新关联",
+    waitForScan: "等待扫描",
+    logout: "退出登录",
+    refresh: "刷新",
+  } : {
+    sub: "Link WhatsApp Web and monitor connection health.",
+    configured: "Configured",
+    linked: "Linked",
+    running: "Running",
+    connected: "Connected",
+    lastConnect: "Last connect",
+    lastMessage: "Last message",
+    authAge: "Auth age",
+    yes: "Yes",
+    no: "No",
+    working: "Working…",
+    showQR: "Show QR",
+    relink: "Relink",
+    waitForScan: "Wait for scan",
+    logout: "Logout",
+    refresh: "Refresh",
+  };
 
   return html`
     <div class="card">
       <div class="card-title">WhatsApp</div>
-      <div class="card-sub">Link WhatsApp Web and monitor connection health.</div>
+      <div class="card-sub">${txt.sub}</div>
       ${accountCountLabel}
 
       <div class="status-list" style="margin-top: 16px;">
         <div>
-          <span class="label">Configured</span>
-          <span>${whatsapp?.configured ? "Yes" : "No"}</span>
+          <span class="label">${txt.configured}</span>
+          <span>${whatsapp?.configured ? txt.yes : txt.no}</span>
         </div>
         <div>
-          <span class="label">Linked</span>
-          <span>${whatsapp?.linked ? "Yes" : "No"}</span>
+          <span class="label">${txt.linked}</span>
+          <span>${whatsapp?.linked ? txt.yes : txt.no}</span>
         </div>
         <div>
-          <span class="label">Running</span>
-          <span>${whatsapp?.running ? "Yes" : "No"}</span>
+          <span class="label">${txt.running}</span>
+          <span>${whatsapp?.running ? txt.yes : txt.no}</span>
         </div>
         <div>
-          <span class="label">Connected</span>
-          <span>${whatsapp?.connected ? "Yes" : "No"}</span>
+          <span class="label">${txt.connected}</span>
+          <span>${whatsapp?.connected ? txt.yes : txt.no}</span>
         </div>
         <div>
-          <span class="label">Last connect</span>
+          <span class="label">${txt.lastConnect}</span>
           <span>
             ${whatsapp?.lastConnectedAt
               ? formatAgo(whatsapp.lastConnectedAt)
@@ -45,13 +82,13 @@ export function renderWhatsAppCard(params: {
           </span>
         </div>
         <div>
-          <span class="label">Last message</span>
+          <span class="label">${txt.lastMessage}</span>
           <span>
             ${whatsapp?.lastMessageAt ? formatAgo(whatsapp.lastMessageAt) : "n/a"}
           </span>
         </div>
         <div>
-          <span class="label">Auth age</span>
+          <span class="label">${txt.authAge}</span>
           <span>
             ${whatsapp?.authAgeMs != null
               ? formatDuration(whatsapp.authAgeMs)
@@ -84,31 +121,31 @@ export function renderWhatsAppCard(params: {
           ?disabled=${props.whatsappBusy}
           @click=${() => props.onWhatsAppStart(false)}
         >
-          ${props.whatsappBusy ? "Working…" : "Show QR"}
+          ${props.whatsappBusy ? txt.working : txt.showQR}
         </button>
         <button
           class="btn"
           ?disabled=${props.whatsappBusy}
           @click=${() => props.onWhatsAppStart(true)}
         >
-          Relink
+          ${txt.relink}
         </button>
         <button
           class="btn"
           ?disabled=${props.whatsappBusy}
           @click=${() => props.onWhatsAppWait()}
         >
-          Wait for scan
+          ${txt.waitForScan}
         </button>
         <button
           class="btn danger"
           ?disabled=${props.whatsappBusy}
           @click=${() => props.onWhatsAppLogout()}
         >
-          Logout
+          ${txt.logout}
         </button>
         <button class="btn" @click=${() => props.onRefresh(true)}>
-          Refresh
+          ${txt.refresh}
         </button>
       </div>
 

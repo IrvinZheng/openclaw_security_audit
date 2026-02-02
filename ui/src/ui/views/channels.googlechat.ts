@@ -11,28 +11,57 @@ export function renderGoogleChatCard(params: {
   accountCountLabel: unknown;
 }) {
   const { props, googleChat, accountCountLabel } = params;
+  const lang = props.lang ?? "zh";
+  
+  const txt = lang === "zh" ? {
+    sub: "Chat API webhook 状态和频道配置",
+    configured: "已配置",
+    running: "运行中",
+    credential: "凭证",
+    audience: "受众",
+    lastStart: "最后启动",
+    lastProbe: "最后探测",
+    yes: "是",
+    no: "否",
+    probeOk: "探测成功",
+    probeFailed: "探测失败",
+    probe: "探测",
+  } : {
+    sub: "Chat API webhook status and channel configuration.",
+    configured: "Configured",
+    running: "Running",
+    credential: "Credential",
+    audience: "Audience",
+    lastStart: "Last start",
+    lastProbe: "Last probe",
+    yes: "Yes",
+    no: "No",
+    probeOk: "Probe ok",
+    probeFailed: "Probe failed",
+    probe: "Probe",
+  };
 
   return html`
     <div class="card">
       <div class="card-title">Google Chat</div>
-      <div class="card-sub">Chat API webhook status and channel configuration.</div>
+      <div class="card-sub">${txt.sub}</div>
       ${accountCountLabel}
 
       <div class="status-list" style="margin-top: 16px;">
         <div>
-          <span class="label">Configured</span>
-          <span>${googleChat ? (googleChat.configured ? "Yes" : "No") : "n/a"}</span>
+          <span class="label">${txt.configured}</span>
+          <span>${googleChat ? (googleChat.configured ? txt.yes : txt.no) : "n/a"}</span>
         </div>
         <div>
-          <span class="label">Running</span>
-          <span>${googleChat ? (googleChat.running ? "Yes" : "No") : "n/a"}</span>
+          <span class="label">${txt.running}</span>
+          <span>${googleChat ? (googleChat.running ? txt.yes : txt.no) : "n/a"}</span>
         </div>
         <div>
-          <span class="label">Credential</span>
+          <span class="label">${txt.credential}</span>
           <span>${googleChat?.credentialSource ?? "n/a"}</span>
         </div>
         <div>
-          <span class="label">Audience</span>
+          <span class="label">${txt.audience}</span>
           <span>
             ${googleChat?.audienceType
               ? `${googleChat.audienceType}${googleChat.audience ? ` · ${googleChat.audience}` : ""}`
@@ -40,11 +69,11 @@ export function renderGoogleChatCard(params: {
           </span>
         </div>
         <div>
-          <span class="label">Last start</span>
+          <span class="label">${txt.lastStart}</span>
           <span>${googleChat?.lastStartAt ? formatAgo(googleChat.lastStartAt) : "n/a"}</span>
         </div>
         <div>
-          <span class="label">Last probe</span>
+          <span class="label">${txt.lastProbe}</span>
           <span>${googleChat?.lastProbeAt ? formatAgo(googleChat.lastProbeAt) : "n/a"}</span>
         </div>
       </div>
@@ -57,7 +86,7 @@ export function renderGoogleChatCard(params: {
 
       ${googleChat?.probe
         ? html`<div class="callout" style="margin-top: 12px;">
-            Probe ${googleChat.probe.ok ? "ok" : "failed"} ·
+            ${googleChat.probe.ok ? txt.probeOk : txt.probeFailed} ·
             ${googleChat.probe.status ?? ""} ${googleChat.probe.error ?? ""}
           </div>`
         : nothing}
@@ -66,7 +95,7 @@ export function renderGoogleChatCard(params: {
 
       <div class="row" style="margin-top: 12px;">
         <button class="btn" @click=${() => props.onRefresh(true)}>
-          Probe
+          ${txt.probe}
         </button>
       </div>
     </div>

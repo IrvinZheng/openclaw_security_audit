@@ -1,9 +1,9 @@
 [English](README-EN.md) | [中文](README.md)
 
-# OpenClaw Security Audit
+# TrustClaw Security Audit
 
 <p align="center">
-  <img src="apps/desktop/renderer/logo.png" alt="OpenClaw Logo" width="120" />
+  <img src="apps/desktop/renderer/logo.png" alt="TrustClaw Logo" width="120" />
 </p>
 
 <p align="center">
@@ -21,7 +21,7 @@
    
    Download the latest version from [Releases](../../releases):
    ```
-   OpenClaw-SecurityAudit-Setup-2026.x.xx.exe
+   TrustClaw-SecurityAudit-Setup-2026.x.xx.exe
    ```
 
 2. **Run Installer**
@@ -29,7 +29,7 @@
    - Double-click the `.exe` file to start the setup wizard
    - Choose installation directory (default is fine)
    - Click "Install" and wait for completion
-   - Check "Run OpenClaw SecurityAudit" and click "Finish"
+   - Check "Run TrustClaw SecurityAudit" and click "Finish"
 
 3. **First Launch**
    
@@ -42,8 +42,8 @@
 
 1. **Download DMG**
    ```
-   OpenClaw-SecurityAudit-2026.x.xx-arm64.dmg  # Apple Silicon
-   OpenClaw-SecurityAudit-2026.x.xx-x64.dmg    # Intel
+   TrustClaw-SecurityAudit-2026.x.xx-arm64.dmg  # Apple Silicon
+   TrustClaw-SecurityAudit-2026.x.xx-x64.dmg    # Intel
    ```
 
 2. **Install Application**
@@ -68,8 +68,8 @@ If you want to run from source or contribute to development:
 ### Step 1: Clone Repository
 
 ```bash
-git clone https://github.com/IrvinZheng/openclaw_security.git
-cd openclaw_security
+git clone https://github.com/IrvinZheng/trustclaw_security.git
+cd trustclaw_security
 ```
 
 ### Step 2: Install Dependencies
@@ -128,7 +128,7 @@ npm run dev
 ### Directory Structure
 
 ```
-openclaw_security/
+trustclaw_security/
 ├── src/                    # Core source code
 │   ├── cli/                # CLI commands
 │   ├── gateway/            # Gateway service
@@ -208,7 +208,7 @@ npm install
 Ensure main project is built:
 
 ```bash
-cd /path/to/openclaw_security
+cd /path/to/trustclaw_security
 pnpm build
 ```
 
@@ -221,7 +221,7 @@ pnpm build
 On first launch, the system automatically generates a Gateway Token and saves to config:
 
 ```
-~/.openclaw/openclaw.json  (user config)
+~/.trustclaw/trustclaw.json  (user config)
 ```
 
 Config example:
@@ -404,7 +404,7 @@ python scripts/game_gen.py --mode ai \
 
 2. Restart app or manually start Gateway:
    ```bash
-   openclaw gateway run --port 18789 --bind loopback
+   trustclaw gateway run --port 18789 --bind loopback
    ```
 
 ### Window Shows Blank
@@ -417,20 +417,20 @@ python scripts/game_gen.py --mode ai \
 
 | System | Path |
 |--------|------|
-| Windows | `C:\Users\<username>\.openclaw\openclaw.json` |
-| macOS | `~/.openclaw/openclaw.json` |
-| Linux | `~/.openclaw/openclaw.json` |
+| Windows | `C:\Users\<username>\.trustclaw\trustclaw.json` |
+| macOS | `~/.trustclaw/trustclaw.json` |
+| Linux | `~/.trustclaw/trustclaw.json` |
 
 ---
 
 ## 📞 Get Help
 
-- 📖 [Full Documentation](https://docs.openclaw.ai)
-- 🐛 [Report Issues](https://github.com/IrvinZheng/openclaw_security/issues)
-- 💬 [Community Discussions](https://github.com/IrvinZheng/openclaw_security/discussions)
+- 📖 [Full Documentation](https://docs.trustclaw.ai)
+- 🐛 [Report Issues](https://github.com/IrvinZheng/trustclaw_security/issues)
+- 💬 [Community Discussions](https://github.com/IrvinZheng/trustclaw_security/discussions)
 
 ---
 
 <p align="center">
-  <sub>Built with ❤️ by OpenClaw Team</sub>
+  <sub>Built with ❤️ by TrustClaw Team</sub>
 </p>

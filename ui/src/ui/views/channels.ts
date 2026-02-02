@@ -1,6 +1,7 @@
 import { html, nothing } from "lit";
 
 import { formatAgo } from "../format";
+import type { Lang } from "../i18n";
 import type {
   ChannelAccountSnapshot,
   ChannelUiMetaEntry,
@@ -211,7 +212,8 @@ function renderGenericChannelCard(
   props: ChannelsProps,
   channelAccounts: Record<string, ChannelAccountSnapshot[]>,
 ) {
-  const label = resolveChannelLabel(props.snapshot, key);
+  const lang = props.lang ?? "zh";
+  const label = resolveChannelLabel(props.snapshot, key, lang);
   const status = props.snapshot?.channels?.[key] as Record<string, unknown> | undefined;
   const configured = typeof status?.configured === "boolean" ? status.configured : undefined;
   const running = typeof status?.running === "boolean" ? status.running : undefined;
@@ -219,32 +221,48 @@ function renderGenericChannelCard(
   const lastError = typeof status?.lastError === "string" ? status.lastError : undefined;
   const accounts = channelAccounts[key] ?? [];
   const accountCountLabel = renderChannelAccountCount(key, channelAccounts);
+  
+  const txt = lang === "zh" ? {
+    sub: "频道状态和配置",
+    configured: "已配置",
+    running: "运行中",
+    connected: "已连接",
+    yes: "是",
+    no: "否",
+  } : {
+    sub: "Channel status and configuration.",
+    configured: "Configured",
+    running: "Running",
+    connected: "Connected",
+    yes: "Yes",
+    no: "No",
+  };
 
   return html`
     <div class="card">
       <div class="card-title">${label}</div>
-      <div class="card-sub">Channel status and configuration.</div>
+      <div class="card-sub">${txt.sub}</div>
       ${accountCountLabel}
 
       ${accounts.length > 0
         ? html`
             <div class="account-card-list">
-              ${accounts.map((account) => renderGenericAccount(account))}
+              ${accounts.map((account) => renderGenericAccount(account, lang))}
             </div>
           `
         : html`
             <div class="status-list" style="margin-top: 16px;">
               <div>
-                <span class="label">Configured</span>
-                <span>${configured == null ? "n/a" : configured ? "Yes" : "No"}</span>
+                <span class="label">${txt.configured}</span>
+                <span>${configured == null ? "n/a" : configured ? txt.yes : txt.no}</span>
               </div>
               <div>
-                <span class="label">Running</span>
-                <span>${running == null ? "n/a" : running ? "Yes" : "No"}</span>
+                <span class="label">${txt.running}</span>
+                <span>${running == null ? "n/a" : running ? txt.yes : txt.no}</span>
               </div>
               <div>
-                <span class="label">Connected</span>
-                <span>${connected == null ? "n/a" : connected ? "Yes" : "No"}</span>
+                <span class="label">${txt.connected}</span>
+                <span>${connected == null ? "n/a" : connected ? txt.yes : txt.no}</span>
               </div>
             </div>
           `}
@@ -267,10 +285,41 @@ function resolveChannelMetaMap(
   return Object.fromEntries(snapshot.channelMeta.map((entry) => [entry.id, entry]));
 }
 
+// 频道名称中文映射
+const CHANNEL_ZH_LABELS: Record<string, string> = {
+  feishu: "飞书",
+  dingtalk: "钉钉",
+  whatsapp: "WhatsApp",
+  telegram: "Telegram",
+  discord: "Discord",
+  slack: "Slack",
+  signal: "Signal",
+  imessage: "iMessage",
+  matrix: "Matrix",
+  msteams: "微软 Teams",
+  googlechat: "Google Chat",
+  line: "LINE",
+  nostr: "Nostr",
+  twitch: "Twitch",
+  mattermost: "Mattermost",
+  zalo: "Zalo",
+  zalouser: "Zalo 用户",
+  tlon: "Tlon",
+  bluebubbles: "BlueBubbles",
+  voicecall: "语音通话",
+  "voice-call": "语音通话",
+  "nextcloud-talk": "Nextcloud Talk",
+};
+
 function resolveChannelLabel(
   snapshot: ChannelsStatusSnapshot | null,
   key: string,
+  lang: Lang = "zh",
 ): string {
+  // 优先使用中文映射
+  if (lang === "zh" && CHANNEL_ZH_LABELS[key]) {
+    return CHANNEL_ZH_LABELS[key];
+  }
   const meta = resolveChannelMetaMap(snapshot)[key];
   return meta?.label ?? snapshot?.channelLabels?.[key] ?? key;
 }
@@ -297,9 +346,25 @@ function deriveConnectedStatus(account: ChannelAccountSnapshot): "Yes" | "No" | 
   return "n/a";
 }
 
-function renderGenericAccount(account: ChannelAccountSnapshot) {
+function renderGenericAccount(account: ChannelAccountSnapshot, lang: Lang = "zh") {
   const runningStatus = deriveRunningStatus(account);
   const connectedStatus = deriveConnectedStatus(account);
+  
+  const txt = lang === "zh" ? {
+    running: "运行中",
+    configured: "已配置",
+    connected: "已连接",
+    lastInbound: "最后接收",
+    yes: "是",
+    no: "否",
+  } : {
+    running: "Running",
+    configured: "Configured",
+    connected: "Connected",
+    lastInbound: "Last inbound",
+    yes: "Yes",
+    no: "No",
+  };
 
   return html`
     <div class="account-card">
@@ -309,19 +374,19 @@ function renderGenericAccount(account: ChannelAccountSnapshot) {
       </div>
       <div class="status-list account-card-status">
         <div>
-          <span class="label">Running</span>
+          <span class="label">${txt.running}</span>
           <span>${runningStatus}</span>
         </div>
         <div>
-          <span class="label">Configured</span>
-          <span>${account.configured ? "Yes" : "No"}</span>
+          <span class="label">${txt.configured}</span>
+          <span>${account.configured ? txt.yes : txt.no}</span>
         </div>
         <div>
-          <span class="label">Connected</span>
+          <span class="label">${txt.connected}</span>
           <span>${connectedStatus}</span>
         </div>
         <div>
-          <span class="label">Last inbound</span>
+          <span class="label">${txt.lastInbound}</span>
           <span>${account.lastInboundAt ? formatAgo(account.lastInboundAt) : "n/a"}</span>
         </div>
         ${account.lastError

@@ -102,7 +102,7 @@ function createWindow() {
   const iconPath = getIconPath();
 
   mainWindow = new BrowserWindow({
-    title: "OPENCLAW-SecurityAudit-CN",
+    title: "TrustClaw",
     width: width,
     height: height,
     show: false, // 先不显示，等加载完成后再显示

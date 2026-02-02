@@ -13,6 +13,37 @@ export function renderTelegramCard(params: {
 }) {
   const { props, telegram, telegramAccounts, accountCountLabel } = params;
   const hasMultipleAccounts = telegramAccounts.length > 1;
+  const lang = props.lang ?? "zh";
+  
+  const txt = lang === "zh" ? {
+    sub: "机器人状态和频道配置",
+    configured: "已配置",
+    running: "运行中",
+    connected: "已连接",
+    lastInbound: "最后接收",
+    mode: "模式",
+    lastStart: "最后启动",
+    lastProbe: "最后探测",
+    yes: "是",
+    no: "否",
+    probeOk: "探测成功",
+    probeFailed: "探测失败",
+    probe: "探测",
+  } : {
+    sub: "Bot status and channel configuration.",
+    configured: "Configured",
+    running: "Running",
+    connected: "Connected",
+    lastInbound: "Last inbound",
+    mode: "Mode",
+    lastStart: "Last start",
+    lastProbe: "Last probe",
+    yes: "Yes",
+    no: "No",
+    probeOk: "Probe ok",
+    probeFailed: "Probe failed",
+    probe: "Probe",
+  };
 
   const renderAccountCard = (account: ChannelAccountSnapshot) => {
     const probe = account.probe as { bot?: { username?: string } } | undefined;
@@ -28,15 +59,15 @@ export function renderTelegramCard(params: {
         </div>
         <div class="status-list account-card-status">
           <div>
-            <span class="label">Running</span>
-            <span>${account.running ? "Yes" : "No"}</span>
+            <span class="label">${txt.running}</span>
+            <span>${account.running ? txt.yes : txt.no}</span>
           </div>
           <div>
-            <span class="label">Configured</span>
-            <span>${account.configured ? "Yes" : "No"}</span>
+            <span class="label">${txt.configured}</span>
+            <span>${account.configured ? txt.yes : txt.no}</span>
           </div>
           <div>
-            <span class="label">Last inbound</span>
+            <span class="label">${txt.lastInbound}</span>
             <span>${account.lastInboundAt ? formatAgo(account.lastInboundAt) : "n/a"}</span>
           </div>
           ${account.lastError
@@ -54,7 +85,7 @@ export function renderTelegramCard(params: {
   return html`
     <div class="card">
       <div class="card-title">Telegram</div>
-      <div class="card-sub">Bot status and channel configuration.</div>
+      <div class="card-sub">${txt.sub}</div>
       ${accountCountLabel}
 
       ${hasMultipleAccounts
@@ -66,23 +97,23 @@ export function renderTelegramCard(params: {
         : html`
             <div class="status-list" style="margin-top: 16px;">
               <div>
-                <span class="label">Configured</span>
-                <span>${telegram?.configured ? "Yes" : "No"}</span>
+                <span class="label">${txt.configured}</span>
+                <span>${telegram?.configured ? txt.yes : txt.no}</span>
               </div>
               <div>
-                <span class="label">Running</span>
-                <span>${telegram?.running ? "Yes" : "No"}</span>
+                <span class="label">${txt.running}</span>
+                <span>${telegram?.running ? txt.yes : txt.no}</span>
               </div>
               <div>
-                <span class="label">Mode</span>
+                <span class="label">${txt.mode}</span>
                 <span>${telegram?.mode ?? "n/a"}</span>
               </div>
               <div>
-                <span class="label">Last start</span>
+                <span class="label">${txt.lastStart}</span>
                 <span>${telegram?.lastStartAt ? formatAgo(telegram.lastStartAt) : "n/a"}</span>
               </div>
               <div>
-                <span class="label">Last probe</span>
+                <span class="label">${txt.lastProbe}</span>
                 <span>${telegram?.lastProbeAt ? formatAgo(telegram.lastProbeAt) : "n/a"}</span>
               </div>
             </div>
@@ -96,7 +127,7 @@ export function renderTelegramCard(params: {
 
       ${telegram?.probe
         ? html`<div class="callout" style="margin-top: 12px;">
-            Probe ${telegram.probe.ok ? "ok" : "failed"} ·
+            ${telegram.probe.ok ? txt.probeOk : txt.probeFailed} ·
             ${telegram.probe.status ?? ""} ${telegram.probe.error ?? ""}
           </div>`
         : nothing}
@@ -105,7 +136,7 @@ export function renderTelegramCard(params: {
 
       <div class="row" style="margin-top: 12px;">
         <button class="btn" @click=${() => props.onRefresh(true)}>
-          Probe
+          ${txt.probe}
         </button>
       </div>
     </div>

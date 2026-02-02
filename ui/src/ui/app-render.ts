@@ -137,10 +137,9 @@ export function renderApp(state: AppViewState) {
           </button>
           <div class="brand">
             <div class="brand-logo">
-              <img src="/assets/openclaw-logo-text-dark.png" alt="OpenClaw" />
+              <img src="/assets/trustclaw-logo-text-dark.png" alt="TrustClaw" />
             </div>
             <div class="brand-text">
-              <div class="brand-title">SecurityAudit-CN</div>
               <div class="brand-sub">Gateway Dashboard</div>
             </div>
           </div>
@@ -260,6 +259,7 @@ export function renderApp(state: AppViewState) {
 
         ${state.tab === "channels"
           ? renderChannels({
+              lang: state.settings.lang,
               connected: state.connected,
               loading: state.channelsLoading,
               snapshot: state.channelsSnapshot,
